@@ -297,7 +297,7 @@ class Fun(commands.Cog):
             if data[str(ctx.message.guild.id)]["commands"]["kill_command"]["kill_timer"] <= 0:
                 await ctx.message.delete(); await ctx.message.channel.set_permissions(user, send_messages=False)
                 await ctx.send('**A dead body has been found!**'); hint = (str(ctx.author)[:3] + str(ctx.author)[7:])
-                await ctx.send(embed=discord.Embed(description=f'Someone has murdered {user.mention}! Find the killer to revive him! **Hint: {hint}**', color=12517376))
+                await ctx.send(embed=discord.Embed(description=f'Someone has murdered {user.mention}! Find the killer to revive them! **Hint: {hint}**', color=12517376))
                 try:
                     msg = await self.client.wait_for("message", check=lambda m: m.channel == ctx.message.channel, timeout=10)
                     if str(ctx.author.id) in str(msg.content).strip("<").strip(">").strip("@").replace("!",""):
