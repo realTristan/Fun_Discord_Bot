@@ -58,12 +58,13 @@ class Settings(commands.Cog):
     # Giving points for every message / image they send
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.author.id != self.client.user.id:
+        if not message.author.bot:
             with open(os.path.dirname(__file__) + '\\..\\json\\data.json','r+') as f:
                 data=json.load(f)
-                
+
                 if not message.attachments:
                     data[str(message.guild.id)]["users"][str(message.author.id)]["points"] += 0.25
+                    
                 elif message.attachments:
                     data[str(message.guild.id)]["users"][str(message.author.id)]["points"] += 0.5
 
