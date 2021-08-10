@@ -11,9 +11,9 @@ class Fun(commands.Cog):
         self.client = client
 
     def write(self, file, data, f):
-        with open(os.path.dirname(__file__) + f'\\..\\json\\{file}.json', 'w') as f:
-            json.dump(data, f, indent=4)
-            f.close()
+        with open(os.path.dirname(__file__) + f'\\..\\json\\{file}.json', 'w') as x:
+            json.dump(data, x, indent=4)
+            f.close(); x.close()
 
 
 
@@ -304,15 +304,15 @@ class Fun(commands.Cog):
                     if str(ctx.author.id) in str(msg.content).strip("<").strip(">").strip("@").replace("!",""):
                         await ctx.message.channel.set_permissions(user, send_messages=True)
                         await ctx.send(embed=discord.Embed(description=f'{ctx.author.mention} has been arrested for murdering {user.mention}‏‏‎ ‎‏‏‎ ‎⛓️', color=12517376))
-                        data[str(ctx.message.guild.id)]["users"][str(ctx.message.author.id)]["points"] -= 50; f.seek(0); json.dump(data, f, indent=4); f.truncate()
+                        data[str(ctx.message.guild.id)]["users"][str(ctx.message.author.id)]["points"] -= 50; self.write('data', data, f)
                 except:
-                    data[str(ctx.message.guild.id)]["users"][str(ctx.message.author.id)]["points"] += 100; f.seek(0); json.dump(data, f, indent=4); f.truncate()
+                    data[str(ctx.message.guild.id)]["users"][str(ctx.message.author.id)]["points"] += 100; self.write('data', data, f)
                     await ctx.send(embed=discord.Embed(description=f"{ctx.author.mention} has gotten away with {user.mention}'s 100$", color=12517376))
                     await ctx.message.channel.set_permissions(user, send_messages=True)
 
-                data[str(ctx.message.guild.id)]["commands"]["kill_command"]["kill_timer"] = 1; f.seek(0); json.dump(data, f, indent=4); f.truncate()
+                data[str(ctx.message.guild.id)]["commands"]["kill_command"]["kill_timer"] = 1; self.write('data', data, f)
                 await asyncio.sleep(300) # waits 5 minutes before being able to use =kill again
-                data[str(ctx.message.guild.id)]["commands"]["kill_command"]["kill_timer"] = 0; f.seek(0); json.dump(data, f, indent=4); f.truncate(); f.close()
+                data[str(ctx.message.guild.id)]["commands"]["kill_command"]["kill_timer"] = 0; self.write('data', data, f)
             else:
                 await ctx.send(embed=discord.Embed(description=f'{ctx.author.mention} the doctors are still cleaning up from the last murder', color=12517376))
 
