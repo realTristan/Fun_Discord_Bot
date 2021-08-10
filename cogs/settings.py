@@ -14,7 +14,7 @@ class Settings(commands.Cog):
     def write(self, file, data, f):
         with open(os.path.dirname(__file__) + f'\\..\\json\\{file}.json', 'w') as x:
             json.dump(data, x, indent=4)
-            f.close(); x.close()
+            x.close()
 
 
 
@@ -35,6 +35,20 @@ class Settings(commands.Cog):
                 })
 
         self.write('data', data, f)
+
+
+    # Giving points for every message / image they send
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        with open(os.path.dirname(__file__) + '\\..\\json\\data.json','r+') as f:
+            data=json.load(f)
+            if not message.attachments:
+                data[str(message.guild.id)]["users"][str(message.author.id)]["points"] += 0.25
+            elif message.attachments:
+                data[str(message.guild.id)]["users"][str(message.author.id)]["points"] += 0.5
+
+            self.write('data', data, f)
+
 
 
 
