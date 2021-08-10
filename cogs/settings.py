@@ -37,17 +37,36 @@ class Settings(commands.Cog):
         self.write('data', data, f)
 
 
+
+    @commands.command(aliases=['lb'])
+    async def leaderboard(self, ctx):
+        with open(os.path.dirname(__file__) + '\\..\\json\\data.json', "r+") as f:
+            data=json.load(f); lb_dict = {}
+
+            for user in data[str(ctx.message.guild.id)]["users"]:
+                lb_dict.update({f"<@{user}>": data[str(ctx.message.guild.id)]["users"][user]["points"]})
+            top_users = {k: v for k, v in sorted(lb_dict.items(), key=lambda item: item[1], reverse=True)}; names = ''
+
+            for postion, user in enumerate(top_users):
+                names += f'**{postion+1}:** {user} [{top_users[user]}]\n'
+                if postion+1 > 19:
+                    break
+            await ctx.send(embed=discord.Embed(title='Points Leaderboard', description=names, color=65535)); f.close()
+
+
+
     # Giving points for every message / image they send
     @commands.Cog.listener()
     async def on_message(self, message):
-        with open(os.path.dirname(__file__) + '\\..\\json\\data.json','r+') as f:
-            data=json.load(f)
-            if not message.attachments:
-                data[str(message.guild.id)]["users"][str(message.author.id)]["points"] += 0.25
-            elif message.attachments:
-                data[str(message.guild.id)]["users"][str(message.author.id)]["points"] += 0.5
+        if message.author.id != client.user.id:
+            with open(os.path.dirname(__file__) + '\\..\\json\\data.json','r+') as f:
+                data=json.load(f)
+                if not message.attachments:
+                    data[str(message.guild.id)]["users"][str(message.author.id)]["points"] += 0.25
+                elif message.attachments:
+                    data[str(message.guild.id)]["users"][str(message.author.id)]["points"] += 0.5
 
-            self.write('data', data, f)
+                self.write('data', data, f)
 
 
 
