@@ -11,9 +11,9 @@ class Marriages(commands.Cog):
         self.client = client
 
     def write(self, file, data, f):
-        with open(os.path.dirname(__file__) + f'\\..\\json\\{file}.json', 'w') as f:
-            json.dump(data, f, indent=4)
-            f.close()
+        with open(os.path.dirname(__file__) + f'\\..\\json\\{file}.json', 'w') as x:
+            json.dump(data, x, indent=4)
+            f.close(); x.close()
 
 
 
