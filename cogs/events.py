@@ -21,16 +21,38 @@ class Events(commands.Cog):
     @commands.command()
     @has_permissions(administrator=True)
     async def addQAevent(self, ctx, args):
-        qa = str(args).split(":")
+        qa = str(args).split("|")
 
         with open(os.path.dirname(__file__) + '\\..\\json\\events.json','r+') as f:
             data=json.load(f)
             data[str(ctx.message.guild.id)]["qa_event"].update({qa[0]: qa[1]})
             self.write("events", data, f)
 
-        await ctx.send(embed=discord.Embed(title='Q&A Event Added', desctipyion=f'**Question:** {qa[0]}\n**Answer:** {qa[1]}', color=65535))
+        await ctx.send(embed=discord.Embed(title='Q&A Added', desctipyion=f'**Question:** {qa[0]}\n**Answer:** {qa[1]}', color=65535))
 
 
+
+    @commands.command()
+    @has_permissions(administrator=True)
+    async def delQAevent(self, ctx, event: str):
+        with open(os.path.dirname(__file__) + '\\..\\json\\events.json','r+') as f:
+            data=json.load(f)
+            for line in list(data[str(ctx.message.guild.id)]["qa_event"]):
+                    if event in line:
+                        del data[str(ctx.message.guild.id)]["qa_event"][str(line)]
+            self.write("events", data, f)
+        await ctx.send(embed=discord.Embed(title='Q&A Removed', description=f'**Question:** {event}\n**Answer:** {data[str(ctx.message.guild.id)]["qa_event"][str(event)]}', color=65535))
+
+
+
+    @commands.command()
+    async def showQAevents(self, ctx):
+        with open(os.path.dirname(__file__) + '\\..\\json\\events.json','r+') as f:
+            data=json.load(f)
+            embed=discord.Embed(title='Q&A Events', color=65535)
+            for line in data[str(ctx.message.guild.id)]["qa_event"]:
+                embed.add_field(name=f'{line}', value=f'{data[str(ctx.message.guild.id)]["qa_event"][line]}')
+            await ctx.send(embed=embed)
 
 
 
