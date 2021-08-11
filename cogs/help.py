@@ -69,6 +69,7 @@ class Help(commands.Cog):
 
     @commands.command()
     async def help(self, ctx):
+        await ctx.message.delete()
         await ctx.send(
             embed=discord.Embed(title=f'{ctx.author.name}, please select commands', color=65535),
             components=[
@@ -89,21 +90,20 @@ class Help(commands.Cog):
             embed1, embed2 = self.embeds("fun")
             await res.author.send(embed=embed1); await res.author.send(embed=embed2)
             await res.respond(type=InteractionType.ChannelMessageWithSource, content=f"{res.author.mention} commands sent to dm's")
-
+            await res.message.delete()
 
         if res.component[0].label == 'Mod Commands':
             await res.author.send(embed=self.embeds("mod"))
             await res.respond(type=InteractionType.ChannelMessageWithSource, content=f"{res.author.mention} commands sent to dm's")
-
+            await res.message.delete()
         
         if res.component[0].label == 'Admin Commands':
             await res.author.send(embed=self.embeds("admin"))
             await res.respond(type=InteractionType.ChannelMessageWithSource, content=f"{res.author.mention} commands sent to dm's")
+            await res.message.delete()
 
 
-            
-            
-            
+
 
 
 def setup(client):
