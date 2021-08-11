@@ -43,6 +43,10 @@ class Settings(commands.Cog):
             data=json.load(f)
             data.update({str(ctx.message.guild.id): {}})
             self.write('vc', data, f)
+        
+        await ctx.send(embed=discord.Embed(description=f'{ctx.author.mention} has successfully setup the bot', color=65535))
+
+
 
 
     @commands.command(aliases=['lb'])
