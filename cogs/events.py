@@ -17,7 +17,6 @@ class Events(commands.Cog):
 
 
 
-
     @commands.command()
     @has_permissions(administrator=True)
     async def addQAevent(self, ctx, *args):
@@ -46,6 +45,7 @@ class Events(commands.Cog):
 
 
     @commands.command()
+    @has_permissions(manage_messages=True)
     async def showQAevents(self, ctx):
         with open(os.path.dirname(__file__) + '\\..\\json\\events.json','r+') as f:
             data=json.load(f)
@@ -64,19 +64,28 @@ class Events(commands.Cog):
             data=json.load(f)
             events = list(data[str(ctx.message.guild.id)]["qa_event"])
             q = random.choice(events)
-            await ctx.send(embed=discord.Embed(title=f'Q&A Event #{id}', description=f'{q}', color=65535))
-        try:
-            msg = await self.client.wait_for("message", check=lambda m: m.channel == ctx.message.channel, timeout=300)
-            if data[str(ctx.message.guild.id)]["qa_event"][str(q)] in msg.content:
-                await ctx.send(embed=discord.Embed(description=f'{ctx.author.mention} was correct! +20 points', color=65535))
-                with open(os.path.dirname(__file__) + '\\..\\json\\data.json','r+') as f:
-                    data=json.load(f)
-                    data[str(msg.guild.id)]["users"][str(msg.author.id)]["points"] += 20
-                    self.write("data", data, f)
+            if str(q).startswith("https://"):
+                embed=discord.Embed(title=f'Q&A Event #{id}', color=65535)
+                embed.set_image(url=q)
+                await ctx.send(embed=embed)
+            else:
+                await ctx.send(embed=discord.Embed(title=f'Q&A Event #{id}', description=f'{q}', color=65535))
 
-        except asyncio.TimeoutError:
-            await ctx.send(embed=discord.Embed(title=f'Q&A Event #{id}', description=f'**Correct answer:** {data[str(ctx.message.guild.id)]["qa_event"][str(q)]}', color=65535))
 
+        
+            while True:
+                try:
+                    msg = await self.client.wait_for("message", check=lambda m: m.channel == ctx.message.channel, timeout=3)
+                    if data[str(ctx.message.guild.id)]["qa_event"][str(q)] in msg.content:
+                        await ctx.send(embed=discord.Embed(description=f'{ctx.author.mention} was correct! +20 points', color=65535))
+                        with open(os.path.dirname(__file__) + '\\..\\json\\data.json','r+') as f:
+                            data=json.load(f)
+                            data[str(msg.guild.id)]["users"][str(msg.author.id)]["points"] += 20
+                            self.write("data", data, f)
+
+                except asyncio.TimeoutError:
+                    await ctx.send(embed=discord.Embed(title=f'Q&A Event #{id}', description=f'**Correct answer:** {data[str(ctx.message.guild.id)]["qa_event"][str(q)]}', color=65535))
+                    break
 
 
 
