@@ -32,6 +32,11 @@ class Settings(commands.Cog):
                         },
                         "users" : {
 
+                        },
+                        "settings": {
+                            "mod_role": 0,
+                            "prefix": "=",
+
                         }
                     }
                 })
@@ -56,6 +61,7 @@ class Settings(commands.Cog):
             await ctx.send(embed=discord.Embed(title='Points Leaderboard', description=names, color=65535)); f.close()
 
 
+    # checks yours or another users points
     @commands.command()
     async def points(self, ctx, *args):
         with open(os.path.dirname(__file__) + '\\..\\json\\data.json', "r+") as f:
@@ -67,6 +73,7 @@ class Settings(commands.Cog):
                 await ctx.send(embed=discord.Embed(title=f'Points', description=f'**User:** {list(args)[0]}\n**Amount:** {data[str(ctx.message.guild.id)]["users"][user_id]["points"]}', color=65535))
             
 
+    # send your points to another user
     @commands.command()
     async def give(self, ctx, user : discord.Member, amount: int):
         with open(os.path.dirname(__file__) + '\\..\\json\\data.json', "r+") as f:
@@ -76,6 +83,56 @@ class Settings(commands.Cog):
                 data[str(ctx.message.guild.id)]["users"][str(user.id)]["points"] += int(amount)
                 self.write("data", data, f); f.close()
                 await ctx.send(embed=discord.Embed(description=f'{ctx.author.mention} gave **{amount} points** to {user.mention}', color=65535))
+
+
+
+
+    @commands.command()
+    async def setpoints(self, ctx, user : discord.User, amount : int):
+        with open(os.path.dirname(__file__) + '\\..\\json\\data.json', "r+") as f:
+            data=json.load(f)
+            data[str(ctx.message.guild.id)]["users"][str(user.id)]["points"] = int(amount)
+            self.write("data", data, f); f.close()
+            await ctx.send(embed=discord.Embed(description=f"{ctx.author.mention} set {user.mention}'s points to **{amount}**", color=65535))
+
+
+
+    @commands.command()
+    async def modrole(self, ctx, role: discord.Role):
+        with open(os.path.dirname(__file__) + '\\..\\json\\data.json', "r+") as f:
+            data=json.load(f)
+            data[str(ctx.message.guild.id)]["settings"]["mod_role"] = int(role.id)
+            self.write("data", data, f); f.close()
+            await ctx.send(embed=discord.Embed(description=f'{ctx.author.mention} set {role.mention} as the mod role', color=65535))
+
+    
+
+    @commands.command()
+    async def addmod(self, ctx, user : discord.Member):
+        with open(os.path.dirname(__file__) + '\\..\\json\\data.json', "r+") as f:
+            data=json.load(f)
+            role = ctx.message.guild.get_role(int(data[str(ctx.message.guild.id)]["settings"]["mod_role"]))
+            await user.add_roles(role)
+            await ctx.send(embed=discord.Embed(description=f'{ctx.author.mention} added {user.mention} as a moderator', color=65535))
+
+
+
+
+    @commands.command()
+    async def delmod(self, ctx, user : discord.Member):
+        with open(os.path.dirname(__file__) + '\\..\\json\\data.json', "r+") as f:
+            data=json.load(f)
+            role = ctx.message.guild.get_role(int(data[str(ctx.message.guild.id)]["settings"]["mod_role"]))
+            await user.remove_roles(role)
+            await ctx.send(embed=discord.Embed(description=f'{ctx.author.mention} removed {user.mention} from being a moderator', color=65535))
+
+
+
+
+
+
+
+
 
 
 
@@ -94,9 +151,9 @@ class Settings(commands.Cog):
 
                 self.write('data', data, f)
 
-                
-                
-                
+
+
+
 
 def setup(client):
     client.add_cog(Settings(client))
