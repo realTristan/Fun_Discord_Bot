@@ -19,6 +19,7 @@ class Settings(commands.Cog):
 
 
     @commands.command()
+    @has_permissions(administrator=True)
     async def setup(self, ctx):
         with open(os.path.dirname(__file__) + '\\..\\json\\data.json','r+') as f:
             data=json.load(f)
@@ -88,6 +89,7 @@ class Settings(commands.Cog):
 
 
     @commands.command()
+    @has_permissions(administrator=True)
     async def setpoints(self, ctx, user : discord.User, amount : int):
         with open(os.path.dirname(__file__) + '\\..\\json\\data.json', "r+") as f:
             data=json.load(f)
@@ -98,6 +100,7 @@ class Settings(commands.Cog):
 
 
     @commands.command()
+    @has_permissions(administrator=True)
     async def modrole(self, ctx, role: discord.Role):
         with open(os.path.dirname(__file__) + '\\..\\json\\data.json', "r+") as f:
             data=json.load(f)
@@ -108,6 +111,7 @@ class Settings(commands.Cog):
     
 
     @commands.command()
+    @has_permissions(administrator=True)
     async def addmod(self, ctx, user : discord.Member):
         with open(os.path.dirname(__file__) + '\\..\\json\\data.json', "r+") as f:
             data=json.load(f)
@@ -119,6 +123,7 @@ class Settings(commands.Cog):
 
 
     @commands.command()
+    @has_permissions(administrator=True)
     async def delmod(self, ctx, user : discord.Member):
         with open(os.path.dirname(__file__) + '\\..\\json\\data.json', "r+") as f:
             data=json.load(f)
