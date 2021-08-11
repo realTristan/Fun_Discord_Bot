@@ -20,15 +20,16 @@ class Events(commands.Cog):
 
     @commands.command()
     @has_permissions(administrator=True)
-    async def addQAevent(self, ctx, args):
-        qa = str(args).split("|")
-
+    async def addQAevent(self, ctx, *args):
+        string = ' '.join(str(enum) for enum in list(args))
+        qa = string.split(">")
+        print(qa)
         with open(os.path.dirname(__file__) + '\\..\\json\\events.json','r+') as f:
             data=json.load(f)
             data[str(ctx.message.guild.id)]["qa_event"].update({qa[0]: qa[1]})
             self.write("events", data, f)
 
-        await ctx.send(embed=discord.Embed(title='Q&A Added', desctipyion=f'**Question:** {qa[0]}\n**Answer:** {qa[1]}', color=65535))
+        await ctx.send(embed=discord.Embed(title='Q&A Added', description=f'**Question:** {qa[0]}\n**Answer:** {qa[1]}', color=65535))
 
 
 
