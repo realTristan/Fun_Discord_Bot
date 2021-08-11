@@ -32,18 +32,17 @@ class Settings(commands.Cog):
                             }
                         },
                         "users" : {
-
                         },
                         "settings": {
                             "mod_role": 0,
                             "prefix": "=",
+                        }}})
+                self.write('data', data, f)
 
-                        }
-                    }
-                })
-
-        self.write('data', data, f)
-
+        with open(os.path.dirname(__file__) + '\\..\\json\\vc.json','r+') as f:
+            data=json.load(f)
+            data.update({str(ctx.message.guild.id): {}})
+            self.write('vc', data, f)
 
 
     @commands.command(aliases=['lb'])
