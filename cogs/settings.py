@@ -1,4 +1,4 @@
-import discord, os, os.path, json, asyncio, random
+import discord, os, os.path, json, asyncio, random, time
 from discord.ext import commands
 from discord.utils import get, find
 from discord.ext.commands import has_permissions
@@ -134,13 +134,6 @@ class Settings(commands.Cog):
 
 
 
-
-
-
-
-
-
-
     # Giving points for every message / image they send
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -155,6 +148,28 @@ class Settings(commands.Cog):
                     data[str(message.guild.id)]["users"][str(message.author.id)]["points"] += 0.5
 
                 self.write('data', data, f)
+
+
+
+
+    #tracking how long an users in the vc for
+    @commands.Cog.listener()
+    async def on_voice_state_update(self, member, before, after):
+        with open(os.path.dirname(__file__) + '\\..\\json\\vc.json','r+') as f:
+            data=json.load(f)
+            if not before.channel and after.channel: # when they join the channel
+                data[str(member.guild.id)].update({str(member.id): {"joined": time.time()}})
+                self.write("vc", data, f)
+
+            elif before.channel and not after.channel: #when they leave the channel
+                timeLeft = time.time() - data[str(member.guild.id)][str(member.id)]["joined"]
+                with open(os.path.dirname(__file__) + '\\..\\json\\data.json','r+') as f:
+                    data=json.load(f)
+                    data[str(member.guild.id)]["users"][str(member.id)]["points"] += round(timeLeft / 60)
+                    self.write("data", data, f)
+
+
+
 
 
 
