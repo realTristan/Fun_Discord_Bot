@@ -134,6 +134,25 @@ class Settings(commands.Cog):
 
 
 
+    @commands.command(aliases=['reg'])
+    async def register(self, ctx):
+        with open(os.path.dirname(__file__) + '\\..\\json\\data.json', "r+") as f:
+            data=json.load(f)
+            if not str(ctx.author.id) in data[str(ctx.message.guild.id)]["users"]:
+                data[str(ctx.message.guild.id)]["users"].update({
+                    f"{ctx.author.id}" : {
+                        "marriages": [],
+                        "points": 0
+                    }
+                })
+                self.write('data', data, f)
+                await ctx.send(embed=discord.Embed(description=f'{ctx.author.mention} has successfully registered', color=65535))
+            else:
+                await ctx.send(embed=discord.Embed(description=f'{ctx.author.mention} is already registered', color=65535))
+            
+
+
+
     # Giving points for every message / image they send
     @commands.Cog.listener()
     async def on_message(self, message):
