@@ -67,6 +67,15 @@ class Settings(commands.Cog):
                 await ctx.send(embed=discord.Embed(title=f'Points', description=f'**User:** {list(args)[0]}\n**Amount:** {data[str(ctx.message.guild.id)]["users"][user_id]["points"]}', color=65535))
             
 
+    @commands.command()
+    async def give(self, ctx, user : discord.Member, amount: int):
+        with open(os.path.dirname(__file__) + '\\..\\json\\data.json', "r+") as f:
+            data=json.load(f)
+            if data[str(ctx.message.guild.id)]["users"][str(ctx.author.id)]["points"] - int(amount) >= 0:
+                data[str(ctx.message.guild.id)]["users"][str(ctx.author.id)]["points"] -= int(amount)
+                data[str(ctx.message.guild.id)]["users"][str(user.id)]["points"] += int(amount)
+                self.write("data", data, f); f.close()
+                await ctx.send(embed=discord.Embed(description=f'{ctx.author.mention} gave **{amount} points** to {user.mention}', color=65535))
 
 
 
@@ -85,9 +94,9 @@ class Settings(commands.Cog):
 
                 self.write('data', data, f)
 
-
-
-
+                
+                
+                
 
 def setup(client):
     client.add_cog(Settings(client))
