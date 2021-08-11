@@ -48,6 +48,7 @@ class Help(commands.Cog):
             embed2.add_field(name='‏‏‎ ‎\nLeaderboard', value="Show the point leaderboard\n=lb")
             embed2.add_field(name='‏‏‎ ‎\nShow Points', value="Check how many points you or an user has\n=points / =points @user")
             embed2.add_field(name='‏‏‎ ‎\nGive Points', value="Give your points to an user\n=give @user (amount of points)")
+            embed2.add_field(name='‏‏‎ ‎\nRegister', value="Feeling left out?, don't worry, add yourself to the system\n=register")
             return embed, embed2
 
         if value == "mod":
