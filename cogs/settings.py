@@ -24,13 +24,15 @@ class Settings(commands.Cog):
             data=json.load(f)
             if str(ctx.message.guild.id) not in data:
                 data.update({
-                    "commands" : {
-                        "kill_command": {
-                            "kill_timer": 0
-                        }
-                    },
-                    "users" : {
+                    str(ctx.message.guild.id): {
+                        "commands" : {
+                            "kill_command": {
+                                "kill_timer": 0
+                            }
+                        },
+                        "users" : {
 
+                        }
                     }
                 })
 
@@ -52,6 +54,19 @@ class Settings(commands.Cog):
                 if postion+1 > 19:
                     break
             await ctx.send(embed=discord.Embed(title='Points Leaderboard', description=names, color=65535)); f.close()
+
+
+    @commands.command()
+    async def points(self, ctx, *args):
+        with open(os.path.dirname(__file__) + '\\..\\json\\data.json', "r+") as f:
+            data=json.load(f)
+            if not args:
+                await ctx.send(embed=discord.Embed(title=f'Points', description=f'**User:** {ctx.author.mention}\n**Amount:** {data[str(ctx.message.guild.id)]["users"][str(ctx.author.id)]["points"]}', color=65535))
+            else:
+                user_id = str(list(args)[0]).strip('<').strip('>').strip('@').replace('!', '')
+                await ctx.send(embed=discord.Embed(title=f'Points', description=f'**User:** {list(args)[0]}\n**Amount:** {data[str(ctx.message.guild.id)]["users"][user_id]["points"]}', color=65535))
+            
+
 
 
 
